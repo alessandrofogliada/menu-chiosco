@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu Digitale Kwatràs</title>
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#ffffff;
+      --text:#000000;
+      --muted:#777777;
+      --line:#d9d9d9;
+      --soft:#f5f5f5;
+      --inverse:#111111;
+      --inverse-2:#1a1a1a;
+      --white:#ffffff;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter', sans-serif;
+      line-height:1.45;
+      overflow-x:hidden;
+    }
+
+    img{
+      max-width:100%;
+      display:block;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    button{
+      font:inherit;
+    }
+
+    .app{
+      width:100%;
+      max-width:430px;
+      margin:0 auto;
+      min-height:100vh;
+      background:var(--bg);
+      border-left:1px solid #eee;
+      border-right:1px solid #eee;
+      position:relative;
+    }
+
+    .menu-loader{
+      position:fixed;
+      inset:0;
+      background:rgba(255,255,255,0.82);
+      backdrop-filter:blur(3px);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:opacity .22s ease, visibility .22s ease;
+      z-index:9999;
+    }
+
+    .menu-loader.is-visible{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+
+    .menu-loader-box{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:14px;
+      padding:20px 24px;
+    }
+
+    .menu-loader-spinner{
+      width:34px;
+      height:34px;
+      border:2px solid #d9d9d9;
+      border-top-color:#000;
+      border-radius:50%;
+      animation:menuSpin .8s linear infinite;
+    }
+
+    .menu-loader-text{
+      font-family:'Oswald', sans-serif;
+      font-size:0.95rem;
+      letter-spacing:.08em;
+      text-transform:uppercase;
+      color:#000;
+    }
+
+    @keyframes menuSpin{
+      to{ transform:rotate(360deg); }
+    }
+
+    .topbar{
+      padding:16px 14px 12px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,0.96);
+      backdrop-filter:blur(8px);
+      position:sticky;
+      top:0;
+      z-index:50;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      margin-bottom:12px;
+    }
+
+    .brand img{
+      max-height:62px;
+      width:auto;
+      object-fit:contain;
+      filter:grayscale(100%) contrast(120%);
+    }
+
+    .language-switcher{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+      margin-bottom:12px;
+      flex-wrap:wrap;
+    }
+
+    .lang-btn{
+      appearance:none;
+      border:1px solid #000;
+      background:#fff;
+      color:#000;
+      min-width:52px;
+      padding:9px 12px;
+      font-family:'Oswald', sans-serif;
+      font-size:0.9rem;
+      letter-spacing:.06em;
+      text-transform:uppercase;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .lang-btn:hover,
+    .lang-btn.active{
+      background:#000;
+      color:#fff;
+    }
+
+    .tabs{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:8px;
+    }
+
+    .tab{
+      border:1px solid #cfcfcf;
+      background:#fff;
+      color:#000;
+      text-align:center;
+      padding:11px 8px;
+      font-family:'Oswald', sans-serif;
+      font-size:0.95rem;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      transition:.2s ease;
+      min-height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    .tab:hover{
+      background:#000;
+      color:#fff;
+      border-color:#000;
+    }
+
+    .hero{
+      background:#000;
+      color:#fff;
+    }
+
+    .hero-image{
+      position:relative;
+      min-height:260px;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,.08), rgba(0,0,0,.45)),
+        url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=900&q=80') center/cover no-repeat;
+    }
+
+    .hero-overlay-title{
+      position:absolute;
+      top:18px;
+      left:16px;
+      right:16px;
+      font-family:'Oswald', sans-serif;
+      font-weight:700;
+      text-transform:uppercase;
+      font-size:clamp(1.7rem, 5vw, 2.2rem);
+      line-height:.95;
+      max-width:260px;
+      color:#fff;
+    }
+
+    .hero-content{
+      padding:22px 18px 28px;
+      text-align:center;
+      background:#111;
+    }
+
+    .hero-content h2{
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(1.7rem, 5vw, 2rem);
+      text-transform:uppercase;
+      line-height:1;
+      margin-bottom:12px;
+    }
+
+    .hero-content p{
+      font-size:1rem;
+      line-height:1.6;
+      color:#e7e7e7;
+      max-width:420px;
+      margin:0 auto 22px;
+    }
+
+    .social-links{
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      gap:18px;
+      margin-top:10px;
+    }
+
+    .social-links a{
+      width:52px;
+      height:52px;
+      border:1px solid #fff;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:#fff;
+      font-size:1.35rem;
+      transition:.2s ease;
+    }
+
+    .social-links a:hover{
+      background:#fff;
+      color:#000;
+    }
+
+    .section{
+      padding:24px 16px 10px;
+      scroll-margin-top:170px;
+    }
+
+    .section-header{
+      display:flex;
+      align-items:flex-end;
+      gap:12px;
+      padding:14px 14px 16px;
+      border-bottom:1px solid var(--line);
+      margin-bottom:18px;
+      background-color:#000;
+    }
+
+    .section-number{
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(2.6rem, 8vw, 3.6rem);
+      line-height:1;
+      color:#d0d0d0;
+      font-weight:600;
+    }
+
+    .section-icon{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:56px;
+    }
+
+    .section-icon i{
+      font-size:3rem;
+      color:#d0d0d0;
+    }
+
+    .section-title-wrap h1{
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(1.7rem, 6vw, 2.2rem);
+      line-height:.95;
+      text-transform:uppercase;
+      color:#fff;
+    }
+
+    .section-title-wrap p{
+      font-family:'Oswald', sans-serif;
+      letter-spacing:.04em;
+      color:#fff;
+      font-size:0.95rem;
+      margin-top:4px;
+    }
+
+    .category{
+      margin:26px 0 12px;
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(1.35rem, 4.5vw, 1.6rem);
+      text-transform:uppercase;
+      letter-spacing:.08em;
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .category::after{
+      content:"";
+      flex:1;
+      height:1px;
+      background:#000;
+      opacity:0.2;
+    }
+
+    .menu-list{
+      display:flex;
+      flex-direction:column;
+    }
+
+    .menu-item{
+      padding:16px 0 16px;
+      border-bottom:1px solid var(--line);
+    }
+
+    .menu-item:first-child{
+      border-top:1px solid var(--line);
+    }
+
+    .menu-top{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      gap:12px;
+      align-items:start;
+      margin-bottom:6px;
+    }
+
+    .menu-name{
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(1.45rem, 5vw, 1.9rem);
+      line-height:1;
+      text-transform:uppercase;
+      word-break:break-word;
+    }
+
+    .menu-price{
+      font-family:'Oswald', sans-serif;
+      font-size:clamp(1.3rem, 5vw, 1.9rem);
+      line-height:1;
+      white-space:nowrap;
+      text-align:right;
+    }
+
+    .menu-desc{
+      font-size:1rem;
+      color:#4e4e4e;
+      max-width:100%;
+    }
+
+    .menu-allergens{
+      margin-top:8px;
+      font-size:0.85rem;
+      color:#666;
+      text-transform:uppercase;
+      letter-spacing:.03em;
+      line-height:1.4;
+    }
+
+    .allergen-cta-section{
+      padding:10px 16px 28px;
+      display:flex;
+      justify-content:center;
+    }
+
+    .allergen-btn{
+      background:#000;
+      color:#fff;
+      border:none;
+      padding:14px 20px;
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      letter-spacing:.05em;
+      font-size:0.9rem;
+      cursor:pointer;
+      width:100%;
+      max-width:280px;
+      transition:.2s ease;
+    }
+
+    .allergen-btn:hover{
+      opacity:.9;
+    }
+
+    .allergen-panel{
+      position:fixed;
+      inset:0;
+      z-index:2000;
+      opacity:0;
+      pointer-events:none;
+      transition:.25s ease;
+    }
+
+    .allergen-panel.active{
+      opacity:1;
+      pointer-events:auto;
+    }
+
+    .allergen-overlay{
+      position:absolute;
+      inset:0;
+      background:rgba(0,0,0,0.4);
+    }
+
+    .allergen-content{
+      position:absolute;
+      bottom:0;
+      left:0;
+      right:0;
+      background:#fff;
+      max-height:80vh;
+      border-top-left-radius:18px;
+      border-top-right-radius:18px;
+      padding:20px;
+      transform:translateY(100%);
+      transition:.3s ease;
+      overflow:auto;
+    }
+
+    .allergen-panel.active .allergen-content{
+      transform:translateY(0);
+    }
+
+    .allergen-header{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:16px;
+      margin-bottom:16px;
+    }
+
+    .allergen-header h2{
+      font-family:'Oswald', sans-serif;
+      text-transform:uppercase;
+      font-size:1.5rem;
+      line-height:1;
+    }
+
+    .allergen-header button{
+      border:none;
+      background:none;
+      font-size:1.5rem;
+      cursor:pointer;
+      color:#000;
+    }
+
+    .allergen-list{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      font-size:0.95rem;
+      line-height:1.4;
+    }
+
+    .allergen-row{
+      padding:10px 0;
+      border-bottom:1px solid var(--line);
+    }
+
+    .allergen-row strong{
+      font-family:'Oswald', sans-serif;
+      letter-spacing:.05em;
+      margin-right:6px;
+    }
+
+    .footer{
+      padding:26px 18px 34px;
+      border-top:1px solid var(--line);
+      text-align:center;
+      color:#666;
+      font-size:.95rem;
+    }
+
+    @media (max-width: 390px){
+      .topbar{
+        padding:14px 12px 12px;
+      }
+
+      .tabs{
+        gap:6px;
+      }
+
+      .tab{
+        font-size:0.82rem;
+        padding:10px 6px;
+      }
+
+      .section{
+        padding:20px 14px 8px;
+      }
+
+      .section-header{
+        align-items:flex-start;
+        gap:16px;
+        padding:12px;
+      }
+
+      .section-number{
+        font-size:2.4rem;
+      }
+
+      .section-title-wrap h1{
+        font-size:2rem;
+      }
+
+      .section-title-wrap p{
+        font-size:0.9rem;
+      }
+
+      .menu-top{
+        grid-template-columns:1fr;
+        gap:6px;
+      }
+
+      .menu-price{
+        text-align:left;
+      }
+
+      .hero-image{
+        min-height:220px;
+      }
+
+      .hero-overlay-title{
+        max-width:190px;
+      }
+
+      .language-switcher{
+        gap:6px;
+        margin-bottom:10px;
+      }
+
+      .lang-btn{
+        min-width:46px;
+        padding:8px 10px;
+        font-size:0.8rem;
+      }
+    }
+
+    @media (min-width: 768px){
+      body{
+        padding:24px;
+        background:#f2f2f2;
+      }
+
+      .app{
+        max-width:720px;
+        border:1px solid #e5e5e5;
+      }
+
+      .topbar{
+        padding:20px 20px 16px;
+      }
+
+      .brand img{
+        max-height:74px;
+      }
+
+      .tabs{
+        grid-template-columns:repeat(3, max-content);
+        justify-content:center;
+      }
+
+      .section{
+        padding:30px 24px 14px;
+      }
+
+      .hero-content p{
+        max-width:520px;
+      }
+
+      .allergen-cta-section{
+        padding:14px 24px 34px;
+      }
+    }
+
+    @media (min-width: 1024px){
+      .app{
+        max-width:820px;
+      }
+
+      .section{
+        padding:34px 30px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="menu-loader" id="menuLoader" aria-hidden="true">
+      <div class="menu-loader-box">
+        <div class="menu-loader-spinner"></div>
+        <p class="menu-loader-text" id="menuLoaderText">Caricamento...</p>
+      </div>
+    </div>
+
+    <header class="topbar">
+      <div class="brand">
+        <img src="kwatras-logo.png" alt="Logo Kwatràs">
+      </div>
+
+      <div class="language-switcher">
+        <button class="lang-btn active" data-lang="it" type="button">IT</button>
+        <button class="lang-btn" data-lang="en" type="button">EN</button>
+        <button class="lang-btn" data-lang="de" type="button">DE</button>
+      </div>
+
+      <nav class="tabs">
+        <a href="#cucina" class="tab" data-tab="cucina">Cucina</a>
+        <a href="#drink" class="tab" data-tab="drink">Drink</a>
+        <a href="#eventi" class="tab" data-tab="eventi">Eventi</a>
+      </nav>
+    </header>
+
+    <section class="section" id="cucina"></section>
+    <section class="section" id="drink"></section>
+
+    <section class="hero" id="eventi">
+      <div class="hero-image">
+        <div class="hero-overlay-title" id="eventsOverlayTitle">
+          Resta aggiornato sulle nostre iniziative ed eventi
+        </div>
+      </div>
+
+      <div class="hero-content">
+        <h2 id="eventsTitle">Seguici sui social</h2>
+        <p id="eventsDescription">
+          Resta aggiornato sulle nostre iniziative ed eventi.
+        </p>
+
+        <div class="social-links">
+          <a href="https://instagram.com/tuoaccount" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+          </a>
+
+          <a href="https://facebook.com/tuapagina" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+
+          <a href="https://wa.me/393000000000" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="allergen-cta-section">
+      <button class="allergen-btn" id="allergenBtn" type="button">
+        Allergeni
+      </button>
+    </section>
+
+    <footer class="footer">
+      Kwatràs — Menu digitale
+    </footer>
+  </div>
+
+  <div class="allergen-panel" id="allergenPanel">
+    <div class="allergen-overlay" id="allergenOverlay"></div>
+    <div class="allergen-content">
+      <div class="allergen-header">
+        <h2 id="allergenTitle">Allergeni</h2>
+        <button id="closeAllergen" type="button" aria-label="Chiudi">✕</button>
+      </div>
+      <div class="allergen-list" id="allergenList"></div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = 'https://script.google.com/macros/s/AKfycbz_9GxiSSPvQmpdDBEM3Sqft_Z3gGilaLFfhI-fRAuE-yYisYekZXqQoNF10--3bnz8/exec';
+    let currentLanguage = 'it';
+    let menuData = null;
+
+    function getLoaderText() {
+      const labels = {
+        it: 'Caricamento...',
+        en: 'Loading...',
+        de: 'Wird geladen...'
+      };
+      return labels[currentLanguage] || labels.it;
+    }
+
+    function showLoader(customText) {
+      const loader = document.getElementById('menuLoader');
+      const loaderText = document.getElementById('menuLoaderText');
+      if (!loader || !loaderText) return;
+      loaderText.textContent = customText || getLoaderText();
+      loader.classList.add('is-visible');
+      loader.setAttribute('aria-hidden', 'false');
+    }
+
+    function hideLoader() {
+      const loader = document.getElementById('menuLoader');
+      if (!loader) return;
+      loader.classList.remove('is-visible');
+      loader.setAttribute('aria-hidden', 'true');
+    }
+
+    async function loadMenu() {
+      try {
+        showLoader();
+        const response = await fetch(API_URL);
+        const data = await response.json();
+        menuData = data;
+        renderMenu();
+      } catch (error) {
+        console.error('Errore caricamento menu:', error);
+      } finally {
+        hideLoader();
+      }
+    }
+
+    function getSectionTitle(section) {
+      const titles = {
+        cucina: { it: 'Cucina', en: 'Kitchen', de: 'Küche' },
+        drink: { it: 'Drink', en: 'Drinks', de: 'Getränke' }
+      };
+      return titles[section]?.[currentLanguage] || titles[section]?.it || '';
+    }
+
+    function getSectionSubtitle(section) {
+      const subtitles = {
+        cucina: {
+          it: 'Proposte dalla cucina',
+          en: 'Kitchen selections',
+          de: 'Angebote aus der Küche'
+        },
+        drink: {
+          it: 'Cocktail e bevande',
+          en: 'Cocktails and beverages',
+          de: 'Cocktails und Getränke'
+        }
+      };
+      return subtitles[section]?.[currentLanguage] || subtitles[section]?.it || '';
+    }
+
+    function getAllergensLabel() {
+      const labels = {
+        it: 'Allergeni',
+        en: 'Allergens',
+        de: 'Allergene'
+      };
+      return labels[currentLanguage] || labels.it;
+    }
+
+    function getTabLabel(tab) {
+      const labels = {
+        cucina: { it: 'Cucina', en: 'Kitchen', de: 'Küche' },
+        drink: { it: 'Drink', en: 'Drinks', de: 'Getränke' },
+        eventi: { it: 'Eventi', en: 'Events', de: 'Events' }
+      };
+      return labels[tab]?.[currentLanguage] || labels[tab]?.it || tab;
+    }
+
+    function getAllergenButtonLabel() {
+      const labels = {
+        it: 'Allergeni',
+        en: 'Allergens',
+        de: 'Allergene'
+      };
+      return labels[currentLanguage] || labels.it;
+    }
+
+    function getEventsContent() {
+      return {
+        overlayTitle: {
+          it: 'Resta aggiornato sulle nostre iniziative ed eventi',
+          en: 'Stay updated on our initiatives and events',
+          de: 'Bleibe über unsere Initiativen und Veranstaltungen auf dem Laufenden'
+        },
+        title: {
+          it: 'Seguici sui social',
+          en: 'Follow us on social media',
+          de: 'Folge uns in den sozialen Medien'
+        },
+        description: {
+          it: 'Resta aggiornato sulle nostre iniziative ed eventi.',
+          en: 'Stay updated on our initiatives and events.',
+          de: 'Bleibe über unsere Initiativen und Veranstaltungen auf dem Laufenden.'
+        }
+      };
+    }
+
+    function updateTabsLanguage() {
+      const tabs = document.querySelectorAll('.tab');
+      tabs.forEach(tab => {
+        const key = tab.dataset.tab;
+        if (!key) return;
+        tab.textContent = getTabLabel(key);
+      });
+    }
+
+    function updateEventsLanguage() {
+      const content = getEventsContent();
+      document.getElementById('eventsOverlayTitle').textContent =
+        content.overlayTitle[currentLanguage] || content.overlayTitle.it;
+      document.getElementById('eventsTitle').textContent =
+        content.title[currentLanguage] || content.title.it;
+      document.getElementById('eventsDescription').textContent =
+        content.description[currentLanguage] || content.description.it;
+    }
+
+    function updateAllergenButtonLanguage() {
+      const btn = document.getElementById('allergenBtn');
+      if (!btn) return;
+      btn.textContent = getAllergenButtonLabel();
+    }
+
+    function renderMenu() {
+      if (!menuData) return;
+
+      renderSection(
+        'cucina',
+        '<i class="fa-solid fa-utensils"></i>',
+        getSectionTitle('cucina'),
+        getSectionSubtitle('cucina'),
+        menuData.food || {},
+        menuData.legend || {}
+      );
+
+      renderSection(
+        'drink',
+        '<i class="fa-solid fa-martini-glass-citrus"></i>',
+        getSectionTitle('drink'),
+        getSectionSubtitle('drink'),
+        menuData.drink || {},
+        menuData.legend || {}
+      );
+    }
+
+    function renderSection(sectionId, sectionMarker, title, subtitle, groupedData, legend) {
+      const section = document.getElementById(sectionId);
+      if (!section) return;
+
+      if (!groupedData || typeof groupedData !== 'object') {
+        section.innerHTML = '';
+        return;
+      }
+
+      let html = `
+        <div class="section-header">
+          <div class="section-number section-icon">${sectionMarker}</div>
+          <div class="section-title-wrap">
+            <h1>${escapeHtml(title)}</h1>
+            <p>${escapeHtml(subtitle)}</p>
+          </div>
+        </div>
+      `;
+
+      Object.entries(groupedData).forEach(([categoryName, items]) => {
+        html += `<h2 class="category">${escapeHtml(categoryName)}</h2>`;
+        html += `<div class="menu-list">`;
+
+        items.forEach(item => {
+          const name = item.nome?.[currentLanguage] || item.nome?.it || '';
+          const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
+          const allergenLabels = (item.allergeni || [])
+            .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
+            .join(', ');
+
+          html += `
+            <article class="menu-item">
+              <div class="menu-top">
+                <h3 class="menu-name">${escapeHtml(name)}</h3>
+                <div class="menu-price">${formatPrice(item.prezzo)}</div>
+              </div>
+              <p class="menu-desc">${escapeHtml(description)}</p>
+              ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
+            </article>
+          `;
+        });
+
+        html += `</div>`;
+      });
+
+      section.innerHTML = html;
+    }
+
+    function renderAllergenList() {
+      const container = document.getElementById('allergenList');
+      const title = document.getElementById('allergenTitle');
+      if (!container || !title) return;
+
+      title.textContent = getAllergensLabel();
+
+      if (!menuData || !menuData.legend) {
+        container.innerHTML = '';
+        return;
+      }
+
+      let html = '';
+      Object.entries(menuData.legend).forEach(([code, translations]) => {
+        const text = translations?.[currentLanguage] || translations?.it || code;
+        html += `
+          <div class="allergen-row">
+            <strong>${escapeHtml(code)}</strong> — ${escapeHtml(text)}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    function setupAllergenPanel() {
+      const btn = document.getElementById('allergenBtn');
+      const panel = document.getElementById('allergenPanel');
+      const overlay = document.getElementById('allergenOverlay');
+      const close = document.getElementById('closeAllergen');
+
+      if (!btn || !panel || !overlay || !close) return;
+
+      btn.addEventListener('click', () => {
+        renderAllergenList();
+        panel.classList.add('active');
+      });
+
+      overlay.addEventListener('click', () => {
+        panel.classList.remove('active');
+      });
+
+      close.addEventListener('click', () => {
+        panel.classList.remove('active');
+      });
+    }
+
+    function formatPrice(price) {
+      if (price === null || price === undefined || isNaN(price)) return '';
+      return `€ ${Number(price).toFixed(2).replace('.', ',')}`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function updateStaticLanguage() {
+      updateTabsLanguage();
+      updateEventsLanguage();
+      updateAllergenButtonLanguage();
+      renderAllergenList();
+    }
+
+    function setupLanguageSwitcher() {
+      const buttons = document.querySelectorAll('.lang-btn');
+
+      buttons.forEach(button => {
+        button.addEventListener('click', () => {
+          const selectedLang = button.dataset.lang;
+          if (selectedLang === currentLanguage) return;
+
+          currentLanguage = selectedLang;
+          buttons.forEach(btn => btn.classList.remove('active'));
+          button.classList.add('active');
+
+          showLoader();
+
+          setTimeout(() => {
+            updateStaticLanguage();
+            renderMenu();
+            hideLoader();
+          }, 180);
+        });
+      });
+    }
+
+    setupLanguageSwitcher();
+    setupAllergenPanel();
+    updateStaticLanguage();
+    loadMenu();
+  </script>
+</body>
+</html>
