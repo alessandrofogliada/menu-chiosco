@@ -609,6 +609,35 @@
       font-size:.95rem;
     }
 
+    .footer-credit{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      flex-wrap:wrap;
+    }
+
+    .footer-link{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      text-decoration:none;
+      font-weight:500;
+      transition:.2s ease;
+      color:black;
+    }
+
+    .footer-logo{
+      height:16px;
+      width:auto;
+      object-fit:contain;
+      display:block;
+    }
+
+    .footer-link:hover{
+      opacity:0.75;
+    }
+
     @media (max-width: 390px){
       .topbar{
         padding:14px 12px 12px;
@@ -803,9 +832,7 @@
       </button>
     </section>
 
-    <footer class="footer">
-      Kwatràs — Menu digitale
-    </footer>
+    <footer class="footer" id="footerText"></footer>
   </div>
 
   <div class="allergen-panel" id="allergenPanel">
@@ -1352,6 +1379,26 @@
       fr: 'Où nous trouver'
     };
     cta.textContent = labels[currentLanguage] || labels.it;
+  }
+
+  const footer = document.getElementById('footerText');
+  if (footer) {
+    const texts = {
+      it: 'Menu digitale sviluppato da',
+      en: 'Digital menu developed by',
+      de: 'Digitales Menü entwickelt von',
+      fr: 'Menu digital développé par'
+    };
+
+    footer.innerHTML = `
+      <div class="footer-credit">
+        <span>${texts[currentLanguage] || texts.it}</span>
+        <a href="https://digriisproject.it" target="_blank" class="footer-link">
+          <img src="image/logo-digriisproject.png" alt="DigriisProject" class="footer-logo">
+          digriisproject.it
+        </a>
+      </div>
+    `;
   }
 }
   
