@@ -65,6 +65,19 @@
       position:relative;
     }
 
+    .menu-item-image{
+        margin-top:12px;
+        overflow:hidden;
+        border-radius:10px;
+      }
+
+      .menu-item-image img{
+        width:100%;
+        height:180px;
+        object-fit:cover;
+        display:block;
+      }
+
     .menu-loader{
       position:fixed;
       inset:0;
@@ -847,7 +860,7 @@
   </div>
 
   <script>
-    const API_URL = 'https://script.google.com/macros/s/AKfycbziLboQ_cL6L4pEvcYDJDXnNAyBzDZlj67cyMtxfMQlOd2GUGF2iQ55v1KMOCYf6t4X/exec';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbyiLPBZcehDOtGlDyLE8wijp8wKhX12xd89kkJfO_v6XgDK2TvnvKav5RJYCkKUyX1Y/exec';
     let currentLanguage = 'it';
     let menuData = null;
     let currentSlide = 0;
@@ -1275,25 +1288,31 @@
         html += `<h2 class="category">${escapeHtml(translatedCategory)}</h2>`;
         html += `<div class="menu-list">`;
   
-        items.forEach(item => {
-          const name = item.nome?.[currentLanguage] || item.nome?.it || '';
-          const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
-          const allergenLabels = (item.allergeni || [])
-            .map(code => String(code).trim())
-            .filter(Boolean)
-            .join(', ');
-  
-          html += `
-            <article class="menu-item">
-              <div class="menu-top">
-                <h3 class="menu-name">${escapeHtml(name)}</h3>
-                <div class="menu-price">${formatPrice(item.prezzo)}</div>
-              </div>
-              <p class="menu-desc">${escapeHtml(description)}</p>
-              ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
-            </article>
-          `;
-        });
+          items.forEach(item => {
+            const name = item.nome?.[currentLanguage] || item.nome?.it || '';
+            const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
+            const allergenLabels = (item.allergeni || [])
+              .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
+              .join(', ');
+
+            const showImage = sectionId === 'cucina' && currentLanguage !== 'it' && item.immagine;
+
+            html += `
+              <article class="menu-item">
+                <div class="menu-top">
+                  <h3 class="menu-name">${escapeHtml(name)}</h3>
+                  <div class="menu-price">${formatPrice(item.prezzo)}</div>
+                </div>
+                <p class="menu-desc">${escapeHtml(description)}</p>
+                ${showImage ? `
+                  <div class="menu-item-image">
+                    <img src="${escapeHtml(item.immagine)}" alt="${escapeHtml(name)}" loading="lazy">
+                  </div>
+                ` : ''}
+                ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
+              </article>
+            `;
+          });
   
         html += `</div>`;
       });
