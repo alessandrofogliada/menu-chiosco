@@ -829,7 +829,7 @@
         <div class="social-links">
           <a href="https://www.instagram.com/kiosk_kwatras/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
           <a href="https://www.facebook.com/kiosk.kwatras/" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
-          <a href="https://wa.me/3478941086" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
+          <!-- <a href="https://wa.me/3478941086" target="_blank"><i class="fa-brands fa-whatsapp"></i></a> -->
         </div>
       </div>
     
@@ -861,7 +861,29 @@
 
   <script>
     const API_URL = 'https://script.google.com/macros/s/AKfycbyiLPBZcehDOtGlDyLE8wijp8wKhX12xd89kkJfO_v6XgDK2TvnvKav5RJYCkKUyX1Y/exec';
-    let currentLanguage = 'it';
+  
+    function detectUserLanguage() {
+      const lang = navigator.language || navigator.userLanguage || '';
+  
+      if (lang.startsWith('it')) return 'it';
+      if (lang.startsWith('en')) return 'en';
+      if (lang.startsWith('de')) return 'de';
+      if (lang.startsWith('fr')) return 'fr';
+  
+      return 'en';
+    }
+  
+    function getInitialLanguage() {
+      const saved = localStorage.getItem('lang');
+  
+      if (['it', 'en', 'de', 'fr'].includes(saved)) {
+        return saved;
+      }
+  
+      return detectUserLanguage();
+    }
+  
+    let currentLanguage = getInitialLanguage();
     let menuData = null;
     let currentSlide = 0;
     let sliderInterval = null;
@@ -873,12 +895,14 @@
         de: 'Wird geladen...',
         fr: 'Chargement...'
       };
+  
       return labels[currentLanguage] || labels.it;
     }
   
     function showLoader(customText) {
       const loader = document.getElementById('menuLoader');
       const loaderText = document.getElementById('menuLoaderText');
+  
       if (!loader || !loaderText) return;
   
       loaderText.textContent = customText || getLoaderText();
@@ -897,8 +921,10 @@
     async function loadMenu() {
       try {
         showLoader();
+  
         const response = await fetch(API_URL);
         const data = await response.json();
+  
         menuData = data;
         renderMenu();
       } catch (error) {
@@ -913,6 +939,7 @@
         cucina: { it: 'Cucina', en: 'Kitchen', de: 'Küche', fr: 'Cuisine' },
         drink: { it: 'Drink', en: 'Drinks', de: 'Getränke', fr: 'Boissons' }
       };
+  
       return titles[section]?.[currentLanguage] || titles[section]?.it || '';
     }
   
@@ -931,6 +958,7 @@
           fr: 'Cocktails et boissons'
         }
       };
+  
       return subtitles[section]?.[currentLanguage] || subtitles[section]?.it || '';
     }
   
@@ -941,6 +969,7 @@
         de: 'Allergene',
         fr: 'Allergènes'
       };
+  
       return labels[currentLanguage] || labels.it;
     }
   
@@ -950,6 +979,7 @@
         drink: { it: 'Drink', en: 'Drinks', de: 'Getränke', fr: 'Boissons' },
         eventi: { it: 'Eventi', en: 'Events', de: 'Events', fr: 'Événements' }
       };
+  
       return labels[tab]?.[currentLanguage] || labels[tab]?.it || tab;
     }
   
@@ -960,6 +990,7 @@
         de: 'Allergene',
         fr: 'Allergènes'
       };
+  
       return labels[currentLanguage] || labels.it;
     }
   
@@ -1002,173 +1033,56 @@
         {
           day: 1,
           image: 'image/slider-1.webp',
-          title: {
-            it: 'Live Music',
-            en: 'Live Music',
-            de: 'Live-Musik',
-            fr: 'Musique live'
-          },
-          time: {
-            it: 'Lunedì • 18:00',
-            en: 'Monday • 6:00 PM',
-            de: 'Montag • 18:00 Uhr',
-            fr: 'Lundi • 18:00'
-          }
+          title: { it: 'Live Music', en: 'Live Music', de: 'Live-Musik', fr: 'Musique live' },
+          time: { it: 'Lunedì • 18:00', en: 'Monday • 6:00 PM', de: 'Montag • 18:00 Uhr', fr: 'Lundi • 18:00' }
         },
         {
           day: 3,
           image: 'image/slider-2.webp',
-          title: {
-            it: 'Aperitivo di pesce',
-            en: 'Seafood Aperitif',
-            de: 'Fisch-Aperitif',
-            fr: 'Apéritif de la mer'
-          },
-          time: {
-            it: 'Mercoledì • 17:00 - 20:00',
-            en: 'Wednesday • 5:00 PM - 8:00 PM',
-            de: 'Mittwoch • 17:00 - 20:00 Uhr',
-            fr: 'Mercredi • 17:00 - 20:00'
-          }
+          title: { it: 'Aperitivo di pesce', en: 'Seafood Aperitif', de: 'Fisch-Aperitif', fr: 'Apéritif de la mer' },
+          time: { it: 'Mercoledì • 17:00 - 20:00', en: 'Wednesday • 5:00 PM - 8:00 PM', de: 'Mittwoch • 17:00 - 20:00 Uhr', fr: 'Mercredi • 17:00 - 20:00' }
         },
         {
           day: 6,
           image: 'image/slider-3.webp',
-          title: {
-            it: 'Evento Speciale',
-            en: 'Special Event',
-            de: 'Spezialevent',
-            fr: 'Événement spécial'
-          },
-          time: {
-            it: 'Sabato • 18:30',
-            en: 'Saturday • 6:30 PM',
-            de: 'Samstag • 18:30 Uhr',
-            fr: 'Samedi • 18:30'
-          }
+          title: { it: 'Evento Speciale', en: 'Special Event', de: 'Spezialevent', fr: 'Événement spécial' },
+          time: { it: 'Sabato • 18:30', en: 'Saturday • 6:30 PM', de: 'Samstag • 18:30 Uhr', fr: 'Samedi • 18:30' }
         }
       ];
     }
   
     function translateCategoryName(categoryName) {
       const translations = {
-        'Bevande': {
-          it: 'Bevande',
-          en: 'Beverages',
-          de: 'Getränke',
-          fr: 'Boissons'
-        },
-        'Birra alla spina': {
-          it: 'Birra alla spina',
-          en: 'Draft Beer',
-          de: 'Bier vom Fass',
-          fr: 'Bière pression'
-        },
-        'Birra in bottiglia': {
-          it: 'Birra in bottiglia',
-          en: 'Bottled Beer',
-          de: 'Flaschenbier',
-          fr: 'Bière en bouteille'
-        },
-        'Vini bianco': {
-          it: 'Vini bianco',
-          en: 'White Wines',
-          de: 'Weißweine',
-          fr: 'Vins blancs'
-        },
-        'Vino bianco': {
-          it: 'Vino bianco',
-          en: 'White Wine',
-          de: 'Weißwein',
-          fr: 'Vin blanc'
-        },
-        'Vino rosso': {
-          it: 'Vino rosso',
-          en: 'Red Wine',
-          de: 'Rotwein',
-          fr: 'Vin rouge'
-        },
-        'Vini rosso': {
-          it: 'Vini rosso',
-          en: 'Red Wines',
-          de: 'Rotweine',
-          fr: 'Vins rouges'
-        },
-        'Vino rosè': {
-          it: 'Vino rosè',
-          en: 'Rosé Wine',
-          de: 'Roséwein',
-          fr: 'Vin rosé'
-        },
-        'Vini rosè': {
-          it: 'Vini rosè',
-          en: 'Rosé Wines',
-          de: 'Roséweine',
-          fr: 'Vins rosés'
-        },
-        'Cocktail': {
-          it: 'Cocktail',
-          en: 'Cocktails',
-          de: 'Cocktails',
-          fr: 'Cocktails'
-        },
-        'Selezione Gin': {
-          it: 'Selezione Gin',
-          en: 'Gin Selection',
-          de: 'Gin-Auswahl',
-          fr: 'Sélection de gin'
-        },
-        'Caffetteria': {
-          it: 'Caffetteria',
-          en: 'Coffee Bar',
-          de: 'Kaffee',
-          fr: 'Caféterie'
-        },
-        'Amari': {
-          it: 'Amari',
-          en: 'Digestifs',
-          de: 'Liköre',
-          fr: 'Amers'
-        },
-        'Cibo': {
-          it: 'Cibo',
-          en: 'Food',
-          de: 'Speisen',
-          fr: 'Cuisine'
-        },
-        'Insalatone': {
-          it: 'Insalatone',
-          en: 'Salads',
-          de: 'Salate',
-          fr: 'Salades'
-        },
-        'Contorni': {
-          it: 'Contorni',
-          en: 'Side Dishes',
-          de: 'Beilagen',
-          fr: 'Accompagnements'
-        },
-        'Dolci': {
-          it: 'Dolci',
-          en: 'Desserts',
-          de: 'Desserts',
-          fr: 'Desserts'
-        },
-        'Panini': {
-          it: 'Panini',
-          en: 'Sandwiches',
-          de: 'Sandwiches',
-          fr: 'Sandwichs'
-        }
+        'Bevande': { it: 'Bevande', en: 'Beverages', de: 'Getränke', fr: 'Boissons' },
+        'Birra alla spina': { it: 'Birra alla spina', en: 'Draft Beer', de: 'Bier vom Fass', fr: 'Bière pression' },
+        'Birra in bottiglia': { it: 'Birra in bottiglia', en: 'Bottled Beer', de: 'Flaschenbier', fr: 'Bière en bouteille' },
+        'Vino bianco': { it: 'Vino bianco', en: 'White Wine', de: 'Weißwein', fr: 'Vin blanc' },
+        'Vino rosso': { it: 'Vino rosso', en: 'Red Wine', de: 'Rotwein', fr: 'Vin rouge' },
+        'Vino rosè': { it: 'Vino rosè', en: 'Rosé Wine', de: 'Roséwein', fr: 'Vin rosé' },
+        'Cocktail': { it: 'Cocktail', en: 'Cocktails', de: 'Cocktails', fr: 'Cocktails' },
+        'Selezione Gin': { it: 'Selezione Gin', en: 'Gin Selection', de: 'Gin-Auswahl', fr: 'Sélection de gin' },
+        'Caffetteria': { it: 'Caffetteria', en: 'Coffee Bar', de: 'Kaffee', fr: 'Caféterie' },
+        'Amari': { it: 'Amari', en: 'Digestifs', de: 'Liköre', fr: 'Amers' },
+        'Cibo': { it: 'Cibo', en: 'Food', de: 'Speisen', fr: 'Cuisine' },
+        'Insalatone': { it: 'Insalatone', en: 'Salads', de: 'Salate', fr: 'Salades' },
+        'Contorni': { it: 'Contorni', en: 'Side Dishes', de: 'Beilagen', fr: 'Accompagnements' },
+        'Dolci': { it: 'Dolci', en: 'Desserts', de: 'Desserts', fr: 'Desserts' },
+        'Panini': { it: 'Panini', en: 'Sandwiches', de: 'Sandwiches', fr: 'Sandwichs' }
       };
   
-      const entry = translations[categoryName];
-      return entry?.[currentLanguage] || entry?.it || categoryName;
+      return translations[categoryName]?.[currentLanguage] || translations[categoryName]?.it || categoryName;
+    }
+  
+    function updateLanguageButtons() {
+      const buttons = document.querySelectorAll('.lang-btn');
+  
+      buttons.forEach(button => {
+        button.classList.toggle('active', button.dataset.lang === currentLanguage);
+      });
     }
   
     function updateTabsLanguage() {
-      const tabs = document.querySelectorAll('.tab');
-      tabs.forEach(tab => {
+      document.querySelectorAll('.tab').forEach(tab => {
         const key = tab.dataset.tab;
         if (!key) return;
         tab.textContent = getTabLabel(key);
@@ -1177,6 +1091,7 @@
   
     function updateEventsLanguage() {
       const content = getEventsContent();
+  
       const eventsTitle = document.getElementById('eventsTitle');
       const eventsDescription = document.getElementById('eventsDescription');
   
@@ -1191,6 +1106,7 @@
   
     function updateHeroIntro() {
       const content = getHeroIntroContent();
+  
       const title = document.getElementById('heroIntroTitle');
       const text = document.getElementById('heroIntroText');
   
@@ -1288,31 +1204,32 @@
         html += `<h2 class="category">${escapeHtml(translatedCategory)}</h2>`;
         html += `<div class="menu-list">`;
   
-          items.forEach(item => {
-            const name = item.nome?.[currentLanguage] || item.nome?.it || '';
-            const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
-            const allergenLabels = (item.allergeni || [])
-              .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
-              .join(', ');
-
-            const showImage = sectionId === 'cucina' && currentLanguage !== 'it' && item.immagine;
-
-            html += `
-              <article class="menu-item">
-                <div class="menu-top">
-                  <h3 class="menu-name">${escapeHtml(name)}</h3>
-                  <div class="menu-price">${formatPrice(item.prezzo)}</div>
+        items.forEach(item => {
+          const name = item.nome?.[currentLanguage] || item.nome?.it || '';
+          const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
+  
+          const allergenLabels = (item.allergeni || [])
+            .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
+            .join(', ');
+  
+          const showImage = sectionId === 'cucina' && currentLanguage !== 'it' && item.immagine;
+  
+          html += `
+            <article class="menu-item">
+              <div class="menu-top">
+                <h3 class="menu-name">${escapeHtml(name)}</h3>
+                <div class="menu-price">${formatPrice(item.prezzo)}</div>
+              </div>
+              <p class="menu-desc">${escapeHtml(description)}</p>
+              ${showImage ? `
+                <div class="menu-item-image">
+                  <img src="${escapeHtml(item.immagine)}" alt="${escapeHtml(name)}" loading="lazy">
                 </div>
-                <p class="menu-desc">${escapeHtml(description)}</p>
-                ${showImage ? `
-                  <div class="menu-item-image">
-                    <img src="${escapeHtml(item.immagine)}" alt="${escapeHtml(name)}" loading="lazy">
-                  </div>
-                ` : ''}
-                ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
-              </article>
-            `;
-          });
+              ` : ''}
+              ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
+            </article>
+          `;
+        });
   
         html += `</div>`;
       });
@@ -1323,6 +1240,7 @@
     function renderAllergenList() {
       const container = document.getElementById('allergenList');
       const title = document.getElementById('allergenTitle');
+  
       if (!container || !title) return;
   
       title.textContent = getAllergensLabel();
@@ -1333,8 +1251,10 @@
       }
   
       let html = '';
+  
       Object.entries(menuData.legend).forEach(([code, translations]) => {
         const text = translations?.[currentLanguage] || translations?.it || code;
+  
         html += `
           <div class="allergen-row">
             <strong>${escapeHtml(code)}</strong> — ${escapeHtml(text)}
@@ -1382,44 +1302,46 @@
     }
   
     function updateStaticLanguage() {
-  updateTabsLanguage();
-  updateEventsLanguage();
-  updateHeroIntro();
-  updateAllergenButtonLanguage();
-  renderAllergenList();
-  renderSlides();
-
-  const cta = document.getElementById('heroCta');
-  if (cta) {
-    const labels = {
-      it: 'Dove trovarci',
-      en: 'Find us',
-      de: 'Wo wir sind',
-      fr: 'Où nous trouver'
-    };
-    cta.textContent = labels[currentLanguage] || labels.it;
-  }
-
-  const footer = document.getElementById('footerText');
-  if (footer) {
-    const texts = {
-      it: 'Menu digitale sviluppato da',
-      en: 'Digital menu developed by',
-      de: 'Digitales Menü entwickelt von',
-      fr: 'Menu digital développé par'
-    };
-
-    footer.innerHTML = `
-      <div class="footer-credit">
-        <span>${texts[currentLanguage] || texts.it}</span>
-        <a href="https://digriisproject.it" target="_blank" class="footer-link">
-          <img src="image/logo-digriisproject.png" alt="DigriisProject" class="footer-logo">
-          digriisproject.it
-        </a>
-      </div>
-    `;
-  }
-}
+      updateLanguageButtons();
+      updateTabsLanguage();
+      updateEventsLanguage();
+      updateHeroIntro();
+      updateAllergenButtonLanguage();
+      renderAllergenList();
+      renderSlides();
+  
+      const cta = document.getElementById('heroCta');
+      if (cta) {
+        const labels = {
+          it: 'Dove trovarci',
+          en: 'Find us',
+          de: 'Wo wir sind',
+          fr: 'Où nous trouver'
+        };
+  
+        cta.textContent = labels[currentLanguage] || labels.it;
+      }
+  
+      const footer = document.getElementById('footerText');
+      if (footer) {
+        const texts = {
+          it: 'Menu digitale sviluppato da',
+          en: 'Digital menu developed by',
+          de: 'Digitales Menü entwickelt von',
+          fr: 'Menu digital développé par'
+        };
+  
+        footer.innerHTML = `
+          <div class="footer-credit">
+            <span>${texts[currentLanguage] || texts.it}</span>
+            <a href="https://digriisproject.it" target="_blank" class="footer-link">
+              <img src="image/logo-digriisproject.png" alt="DigriisProject" class="footer-logo">
+              digriisproject.it
+            </a>
+          </div>
+        `;
+      }
+    }
   
     function setupLanguageSwitcher() {
       const buttons = document.querySelectorAll('.lang-btn');
@@ -1430,8 +1352,7 @@
           if (selectedLang === currentLanguage) return;
   
           currentLanguage = selectedLang;
-          buttons.forEach(btn => btn.classList.remove('active'));
-          button.classList.add('active');
+          localStorage.setItem('lang', selectedLang);
   
           showLoader();
   
