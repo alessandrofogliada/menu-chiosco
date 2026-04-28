@@ -651,6 +651,35 @@
       opacity:0.75;
     }
 
+
+    .subnav{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding:10px 0 16px;
+}
+
+.subnav::-webkit-scrollbar{
+  display:none;
+}
+
+.subnav-btn{
+  flex:0 0 auto;
+  border:1px solid #000;
+  background:#fff;
+  padding:8px 12px;
+  font-family:'Oswald', sans-serif;
+  text-transform:uppercase;
+  font-size:0.75rem;
+  cursor:pointer;
+  transition:.2s ease;
+}
+
+.subnav-btn:hover{
+  background:#000;
+  color:#fff;
+}
+
     @media (max-width: 390px){
       .topbar{
         padding:14px 12px 12px;
@@ -790,6 +819,7 @@
         <a href="#drink" class="tab" data-tab="drink">Drink</a>
         <a href="#eventi" class="tab" data-tab="eventi">Eventi</a>
       </nav>
+      
     </header>
 
 
@@ -1180,62 +1210,102 @@
     }
   
     function renderSection(sectionId, sectionMarker, title, subtitle, groupedData, legend) {
-      const section = document.getElementById(sectionId);
-      if (!section) return;
-  
-      if (!groupedData || typeof groupedData !== 'object') {
-        section.innerHTML = '';
-        return;
-      }
-  
-      let html = `
-        <div class="section-header">
-          <div class="section-number section-icon">${sectionMarker}</div>
-          <div class="section-title-wrap">
-            <h1>${escapeHtml(title)}</h1>
-            <p>${escapeHtml(subtitle)}</p>
+  const section = document.getElementById(sectionId);
+  if (!section) return;
+
+  if (!groupedData || typeof groupedData !== 'object') {
+    section.innerHTML = '';
+    return;
+  }
+
+  let html = `
+    <div class="section-header">
+      <div class="section-number section-icon">${sectionMarker}</div>
+      <div class="section-title-wrap">
+        <h1>${escapeHtml(title)}</h1>
+        <p>${escapeHtml(subtitle)}</p>
+      </div>
+    </div>
+  `;
+
+  /* 🔥 SUBNAV */
+  let subnav = `<div class="subnav">`;
+
+  Object.keys(groupedData).forEach(cat => {
+    subnav += `
+      <button class="subnav-btn" data-target="cat-${sectionId}-${escapeHtml(cat)}">
+        ${escapeHtml(translateCategoryName(cat))}
+      </button>
+    `;
+  });
+
+  subnav += `</div>`;
+  html += subnav;
+
+  /* 🔥 LISTA */
+  Object.entries(groupedData).forEach(([categoryName, items]) => {
+    const translatedCategory = translateCategoryName(categoryName);
+    const categoryId = `cat-${sectionId}-${categoryName}`;
+
+    html += `<h2 class="category" id="${escapeHtml(categoryId)}">${escapeHtml(translatedCategory)}</h2>`;
+    html += `<div class="menu-list">`;
+
+    items.forEach(item => {
+      const name = item.nome?.[currentLanguage] || item.nome?.it || '';
+      const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
+
+      const allergenLabels = (item.allergeni || [])
+        .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
+        .join(', ');
+
+      const showImage = sectionId === 'cucina' && currentLanguage !== 'it' && item.immagine;
+
+      html += `
+        <article class="menu-item">
+          <div class="menu-top">
+            <h3 class="menu-name">${escapeHtml(name)}</h3>
+            <div class="menu-price">${formatPrice(item.prezzo)}</div>
           </div>
-        </div>
+          <p class="menu-desc">${escapeHtml(description)}</p>
+
+          ${showImage ? `
+            <div class="menu-item-image">
+              <img src="${escapeHtml(item.immagine)}" alt="${escapeHtml(name)}" loading="lazy">
+            </div>
+          ` : ''}
+
+          ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
+        </article>
       `;
-  
-      Object.entries(groupedData).forEach(([categoryName, items]) => {
-        const translatedCategory = translateCategoryName(categoryName);
-  
-        html += `<h2 class="category">${escapeHtml(translatedCategory)}</h2>`;
-        html += `<div class="menu-list">`;
-  
-        items.forEach(item => {
-          const name = item.nome?.[currentLanguage] || item.nome?.it || '';
-          const description = item.descrizione?.[currentLanguage] || item.descrizione?.it || '';
-  
-          const allergenLabels = (item.allergeni || [])
-            .map(code => legend?.[code]?.[currentLanguage] || legend?.[code]?.it || code)
-            .join(', ');
-  
-          const showImage = sectionId === 'cucina' && currentLanguage !== 'it' && item.immagine;
-  
-          html += `
-            <article class="menu-item">
-              <div class="menu-top">
-                <h3 class="menu-name">${escapeHtml(name)}</h3>
-                <div class="menu-price">${formatPrice(item.prezzo)}</div>
-              </div>
-              <p class="menu-desc">${escapeHtml(description)}</p>
-              ${showImage ? `
-                <div class="menu-item-image">
-                  <img src="${escapeHtml(item.immagine)}" alt="${escapeHtml(name)}" loading="lazy">
-                </div>
-              ` : ''}
-              ${allergenLabels ? `<p class="menu-allergens">${getAllergensLabel()}: ${escapeHtml(allergenLabels)}</p>` : ''}
-            </article>
-          `;
-        });
-  
-        html += `</div>`;
+    });
+
+    html += `</div>`;
+  });
+
+  section.innerHTML = html;
+
+  /* 🔥 SCROLL CLICK */
+  setTimeout(() => {
+    section.querySelectorAll('.subnav-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const targetId = btn.dataset.target;
+        const target = document.getElementById(targetId);
+
+        if (target) {
+          const headerOffset = 195; // altezza header (regola se serve)
+
+const elementPosition = target.getBoundingClientRect().top;
+const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+window.scrollTo({
+  top: offsetPosition,
+  behavior: 'smooth'
+});
+        }
       });
-  
-      section.innerHTML = html;
-    }
+    });
+  }, 0);
+}
   
     function renderAllergenList() {
       const container = document.getElementById('allergenList');
